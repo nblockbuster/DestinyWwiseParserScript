@@ -4,14 +4,12 @@ import sys
 import time
 import subprocess
 import zipfile
-
 from math import floor
 
 #PUT YOUR OWN PATH HERE
-#(it has to be a folder of .bnk files)
 
 bnk_directory = ""
-packages_path = "C:\\Steam SSD Games\\steamapps\\common\\Destiny 2\\packages"
+packages_path = ""
 
 def get_flipped_hex(h, length):
     if length % 2 != 0:
@@ -86,6 +84,9 @@ if(not os.path.exists(wd + "\\Resources\\wwiseparser\\WwiseParser.exe") or not o
 
 if(not os.path.isfile(bnk_file)):
     print("File not found, trying to call DestinyUnpacker...")
+    if(packages_path == ""):
+        print("Packages path not set. Please edit file and set the path to the packages folder.")
+        exit(9)
     #if (bnk_file[-4:] == ".bnk" and bnk_file[-6:-4] == "80"):
         #bnk_pkg = getPkgId(bnk_file[-12:-4])
         #print("1", bnk_pkg)
