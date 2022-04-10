@@ -6,10 +6,15 @@ import subprocess
 import zipfile
 from math import floor
 
-#PUT YOUR OWN PATH HERE
+#bnk_directory is unneeded if you set packages, but it's here for convenience
+#packages_path doesnt matter if you set bnk_directory and dont want wave files to be extracted too.
 
-bnk_directory = ""
-packages_path = ""
+#PUT YOUR OWN PATHS HERE
+#!!!!
+bnk_directory = "E:\\DestinyMusic\\TWQBnks"
+packages_path = "C:\\Steam SSD Games\\steamapps\\Common\\Destiny 2\\packages"
+#!!!!
+#PUT YOUR OWN PATHS HERE
 
 def get_flipped_hex(h, length):
     if length % 2 != 0:
@@ -33,16 +38,33 @@ def getHashFromFile(file):
     two = hex(one + secondhex_int + 2155872256)
     return get_flipped_hex(two[2:], 8).upper()
     
+wavexport = False
+version = ""
 
 wd = os.getcwd()
 
-if(not len(sys.argv) == 2):
+if(len(sys.argv) < 2):
     print("Usage: parse.py <path to .bnk file>")
     print("No file specified.")
     print("Please input a valid file format.")
     print("If you are using a file in the bnk directory, please either use the full path, or open this file in notepad and change the \"bnk_directory\" path.")
     print("Valid format examples: \"0129-1cfd\", \"0129-1cfd.bnk\", \"E:/bnks/0129-1cfd\", \"E:/bnks/0129-1cfd.bnk\"")
     exit(5)
+    
+if (len(sys.argv) >= 3):
+    if(sys.argv[2] == "wav" or sys.argv[2] == "wavexport"):
+        wavexport = True
+    if(sys.argv[2] == "d1"):
+        version = "d1"
+    if(sys.argv[2] == "prebl"):
+        version = "prebl"
+elif (len(sys.argv) >= 3):
+    if(sys.argv[3] == "wav" or sys.argv[3] == "wavexport"):
+        wavexport = True
+    if(sys.argv[3] == "d1"):
+        version = "d1"
+    if(sys.argv[3] == "prebl"):
+        version = "prebl"
 
 if(sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1)):
     bnk_file = bnk_directory + "\\" + sys.argv[1]
@@ -77,12 +99,13 @@ if not os.path.exists(wd + "\\raw_outputs"):
 
 if not os.path.exists(wd + "\\outputs"):
     os.makedirs(wd + "\\outputs")
-if(not os.path.exists(wd + "\\Resources\\wwiseparser\\WwiseParser.exe") or not os.path.exists(wd + "\\Resources\\Unpacker\\DestinyUnpackerCPP.exe")):
+if not os.path.exists(wd + "\\Resources\\wwiseparser\\WwiseParser.exe") or not os.path.exists(wd + "\\Resources\\Unpacker\\DestinyUnpackerCPP.exe"):
     os.makedirs(wd + "\\Resources")
     with zipfile.ZipFile(wd + "\\Resources.zip", 'r') as zip_ref:
         zip_ref.extractall(wd)
+#check if bnk_file exists
 
-if(not os.path.isfile(bnk_file)):
+if not os.path.isfile(bnk_file ):
     print("File not found, trying to call DestinyUnpacker...")
     if(packages_path == ""):
         print("Packages path not set. Please edit file and set the path to the packages folder.")
@@ -97,6 +120,7 @@ if(not os.path.isfile(bnk_file)):
     print(dunpacker)
     subprocess.call(dunpacker, shell=True)
     bnk_file = wd + "\\raw_outputs\\" + bnkname + "\\" + bnkname + ".bnk"
+    print(bnk_file)
     print("File found, continuing...")
     
 print("Parsing " + bnk_file)
@@ -116,6 +140,8 @@ os.chdir(wd)
 #print(bnkname)
 print_list = []
 MusicTrackIds = []
+GinsorIds = []
+
 for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
     if hirc_file == "hirc.json":
         hirc_path = wd + "\\raw_outputs\\" + bnkname + "\\hirc.json"
@@ -223,10 +249,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                 mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                 print("                    Src GinsorID: ", mushash)
                                                                 print_list.append("                    Src GinsorID: " + mushash + "\n")
+                                                                GinsorIds.append(mushash)
                                                         elif(trobj["Properties"]["ParameterCount"] == 0):
                                                             mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                             print("                Src GinsorID: ", mushash)
                                                             print_list.append("                Src GinsorID: " + mushash + "\n")
+                                                            GinsorIds.append(mushash)
                                                         #elif(trobj["MusicCues"]):
                                                             #mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["MusicCues"][0]["Id"]:x}', 8), 8).upper()
                                                             #print("                    Src GinsorID: ", mushash)
@@ -272,10 +300,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                         mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                         print("                        Src GinsorID: ", mushash)
                                                                         print_list.append("                        Src GinsorID: " + mushash + "\n")
+                                                                        GinsorIds.append(mushash)
                                                                 elif(trobj["Properties"]["ParameterCount"] == 0):
                                                                     mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                     print("                    Src GinsorID: ", mushash)
                                                                     print_list.append("                    Src GinsorID: " + mushash + "\n")
+                                                                    GinsorIds.append(mushash)
                                         i+=1
                                 elif(child["Type"] == "SequenceContinuous"):
                                     print("            SequenceContinuous #{g}".format(g=g))
@@ -319,10 +349,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                         mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                         print("                            Src GinsorID: ", mushash)
                                                                         print_list.append("                            Src GinsorID: " + mushash + "\n")
+                                                                        GinsorIds.append(mushash)
                                                                 elif(trobj["Properties"]["ParameterCount"] == 0):
                                                                     mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                     print("                        Src GinsorID: ", mushash)
                                                                     print_list.append("                        Src GinsorID: " + mushash + "\n")
+                                                                    GinsorIds.append(mushash)
                                         elif(childchild["Type"] == "RandomStep"):
                                             print("                RandomStep #{k}".format(k=k))
                                             print("                    RandomStep Loop Count:", childchild["LoopCount"])
@@ -362,10 +394,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                             mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                             print("                                Src GinsorID: ", mushash)
                                                                             print_list.append("                                Src GinsorID: " + mushash + "\n")
+                                                                            GinsorIds.append(mushash)
                                                                     elif(trobj["Properties"]["ParameterCount"] == 0):
                                                                         mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                         print("                            Src GinsorID: ", mushash)
                                                                         print_list.append("                            Src GinsorID: " + mushash + "\n")
+                                                                        GinsorIds.append(mushash)
                                         elif(childchild["Type"] == "SequenceStep"):
                                             print("                SequenceStep #{k}".format(k=k))
                                             print("                    SequenceStep Loop Count:", childchild["LoopCount"])
@@ -405,10 +439,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                             mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                             print("                    Src GinsorID: ", mushash)
                                                                             print_list.append("                    Src GinsorID: " + mushash + "\n")
+                                                                            GinsorIds.append(mushash)
                                                                     elif(trobj["Properties"]["ParameterCount"] == 0):
                                                                         mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                         print("                Src GinsorID: ", mushash)
                                                                         print_list.append("                Src GinsorID: " + mushash + "\n")
+                                                                        GinsorIds.append(mushash)
                                         i+=1
                                         k+=1
                                 i+=1
@@ -419,4 +455,14 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
         for line in print_list:
             f.write(line)
 print(f"\nExported to outputs\\{bnkname}.txt")
+
+if(len(GinsorIds) != 0 and wavexport):
+    uniqueGinsorIds = set(GinsorIds)
+    for ginsorID in uniqueGinsorIds:
+        unpacker_cmd = "Resources\\Unpacker\\DestinyUnpackerCPP.exe -p \"" + packages_path + "\" -o \"outputs\\" + bnkname + "\" -s " + ginsorID + " -h -w"
+        if (version):
+            unpacker_cmd += " -v " + version
+        print(unpacker_cmd)
+        subprocess.call(unpacker_cmd, shell=True)
+
 print("Done!")
