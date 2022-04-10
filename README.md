@@ -1,5 +1,5 @@
 # DestinyWwiseParserScript
-Python file to create and parse .json files created by [WwiseParser](https://github.com/xyx0826/WwiseParser), semi specialized for Destiny and Destiny 2
+Python script to create and parse .json files created by [WwiseParser](https://github.com/xyx0826/WwiseParser), semi specialized for Destiny and Destiny 2
 
 ## Usage
 `parse.py <path to .bnk file>`
