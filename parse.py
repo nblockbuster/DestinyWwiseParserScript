@@ -5,10 +5,13 @@ import time
 import subprocess
 import zipfile
 
+from math import floor
+
 #PUT YOUR OWN PATH HERE
 #(it has to be a folder of .bnk files)
 
-bnk_directory = "E:\\DestinyMusic\\TWQBnks"
+bnk_directory = ""
+packages_path = "C:\\Steam SSD Games\\steamapps\\common\\Destiny 2\\packages"
 
 def get_flipped_hex(h, length):
     if length % 2 != 0:
@@ -20,6 +23,19 @@ def get_flipped_hex(h, length):
 def fill_hex_with_zeros(s, desired_length):
     return ("0"*desired_length + s)[-desired_length:]
 
+def getPkgId(hash):
+    pkgID = floor((int(get_flipped_hex(hash,8), 16) - 0x80800000) / 8192)
+    return fill_hex_with_zeros("%04X" % pkgID, 4)
+
+def getHashFromFile(file):
+    pkg = file.replace(".bin", "").upper()
+    firsthex_int = int(pkg[:4], 16)
+    secondhex_int = int(pkg[5:], 16)
+    one = firsthex_int*8192
+    two = hex(one + secondhex_int + 2155872256)
+    return get_flipped_hex(two[2:], 8).upper()
+    
+
 wd = os.getcwd()
 
 if(not len(sys.argv) == 2):
@@ -29,54 +45,66 @@ if(not len(sys.argv) == 2):
     print("If you are using a file in the bnk directory, please either use the full path, or open this file in notepad and change the \"bnk_directory\" path.")
     print("Valid format examples: \"0129-1cfd\", \"0129-1cfd.bnk\", \"E:/bnks/0129-1cfd\", \"E:/bnks/0129-1cfd.bnk\"")
     exit(5)
-    
-if(sys.argv[1][-4:] == ".bnk" and sys.argv[1].find("\\") == -1):
+
+if(sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1)):
     bnk_file = bnk_directory + "\\" + sys.argv[1]
-elif (sys.argv[1][-4:] == ".bnk" and sys.argv[1].find("\\") != -1):
+elif (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1)):
     bnk_file = sys.argv[1]
-elif(sys.argv[1][-4:] != ".bnk" and sys.argv[1].find("\\") == -1):
+elif(sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1)):
     bnk_file = bnk_directory + "\\" + sys.argv[1] + ".bnk"
-elif (sys.argv[1][-4:] != ".bnk" and sys.argv[1].find("\\") != -1):
+elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1)):
     bnk_file = sys.argv[1] + ".bnk"
 
-if(not os.path.isfile(bnk_file)):
-    #print("File not found, trying to call DestinyUnpacker...")
-    #if(bnk_file[-4:] == ".bnk"):
-        #bnk_pkg = bnk_file[-13:4]
-    #elif(bnk_file[-4:] != ".bnk"):
-        #bnk_pkg = bnk_file[-9:4]
-    print("File not found.")
-    exit(2)
-    
-    
+if (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and sys.argv[1][-6:-4] != "80"):
+    bnkname = sys.argv[1][-13:-4]
+elif (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and sys.argv[1][-6:-4] != "80"):
+    bnkname = sys.argv[1][-13:-4]
+elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and sys.argv[1][-2:] != "80"):
+    bnkname = sys.argv[1][-9:]
+elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and sys.argv[1][-2:] != "80"):
+    bnkname = sys.argv[1][-9:]
+elif (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and sys.argv[1][-6:-4] == "80"):
+    bnkname = sys.argv[1][-12:-4]
+elif (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and sys.argv[1][-6:-4] == "80"):
+    bnkname = sys.argv[1][-12:-4]
+elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and sys.argv[1][-2:] == "80"):
+    bnkname = sys.argv[1][-8:]
+elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and sys.argv[1][-2:] == "80"):
+    bnkname = sys.argv[1][-8:]
 
-print("Parsing " + bnk_file)
 #make raw outputs folder
 if not os.path.exists(wd + "\\raw_outputs"):
     os.makedirs(wd + "\\raw_outputs")
-#make final outputs folder
+    os.makedirs(wd + "\\raw_outputs\\" + bnkname)
+
 if not os.path.exists(wd + "\\outputs"):
     os.makedirs(wd + "\\outputs")
-#unzip required library files (if they don't exist)
-if(not os.path.exists(wd + "\\wwiseparser\\WwiseParser.exe")):
-    os.makedirs(wd + "\\wwiseparser")
-    with zipfile.ZipFile(wd + "\\WwiseParser.zip", 'r') as zip_ref:
+if(not os.path.exists(wd + "\\Resources\\wwiseparser\\WwiseParser.exe") or not os.path.exists(wd + "\\Resources\\Unpacker\\DestinyUnpackerCPP.exe")):
+    os.makedirs(wd + "\\Resources")
+    with zipfile.ZipFile(wd + "\\Resources.zip", 'r') as zip_ref:
         zip_ref.extractall(wd)
+
+if(not os.path.isfile(bnk_file)):
+    print("File not found, trying to call DestinyUnpacker...")
+    #if (bnk_file[-4:] == ".bnk" and bnk_file[-6:-4] == "80"):
+        #bnk_pkg = getPkgId(bnk_file[-12:-4])
+        #print("1", bnk_pkg)
+    #elif(bnk_file[-4:] == ".bnk" and bnk_file[-6:-4] != "80"):
+        #bnk_pkg = bnk_file[-13:-9]
+        #print("3", bnk_pkg)
+    dunpacker = "Resources\\Unpacker\\DestinyUnpackerCPP.exe -p \"" + packages_path + "\" -o \"raw_outputs\\" + bnkname + "\" -s " + getHashFromFile(bnkname)
+    print(dunpacker)
+    subprocess.call(dunpacker, shell=True)
+    bnk_file = wd + "\\raw_outputs\\" + bnkname + "\\" + bnkname + ".bnk"
+    print("File found, continuing...")
+    
+print("Parsing " + bnk_file)
         
 os.chdir(wd + "\\raw_outputs")
-wparse = f"{wd}\\wwiseparser\\WwiseParser.exe", bnk_file
+wparse = f"{wd}\\Resources\\wwiseparser\\WwiseParser.exe", bnk_file
 #print(wparse)
 subprocess.check_output(wparse, shell=True).decode()
 os.chdir(wd)
-
-if(sys.argv[1][-4:] == ".bnk" and sys.argv[1].find("\\") == -1):
-    bnkname = sys.argv[1][-9:-4]
-elif (sys.argv[1][-4:] == ".bnk" and sys.argv[1].find("\\") != -1):
-    bnkname = sys.argv[1][-13:-4]
-elif(sys.argv[1][-4:] != ".bnk" and sys.argv[1].find("\\") == -1):
-    bnkname = sys.argv[1]
-elif (sys.argv[1][-4:] != ".bnk" and sys.argv[1].find("\\") != -1):
-    bnkname = sys.argv[1][-9:]
 
 #if(sys.argv[1][-4:] == ".bnk"):
 #    bnkname = sys.argv[1][-9:-4]
@@ -86,13 +114,14 @@ elif (sys.argv[1][-4:] != ".bnk" and sys.argv[1].find("\\") != -1):
 
 #print(bnkname)
 print_list = []
+MusicTrackIds = []
 for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
     if hirc_file == "hirc.json":
         hirc_path = wd + "\\raw_outputs\\" + bnkname + "\\hirc.json"
         print("Parsing " + hirc_path)
         start_time = time.time()
         with open(hirc_path) as json_file:
-            MusicTrackIds = []
+            data = json.load(json_file)           
             for obj in data["Objects"]:
                 if obj["Type"] == "MusicTrack":
                     MusicTrackIds.append(obj["Id"])
@@ -101,7 +130,6 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                 exit(8)
             MusicPlaylistContainerIds = []
             Tempos = {}
-            data = json.load(json_file)
             objc = 0
             o = 0
             for obj in data["Objects"]:
