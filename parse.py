@@ -92,10 +92,14 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
         print("Parsing " + hirc_path)
         start_time = time.time()
         with open(hirc_path) as json_file:
-            MusicPlaylistContainerIds = []
-            MusicSegmentIds = []
             MusicTrackIds = []
-            MusicSrcIds = []
+            for obj in data["Objects"]:
+                if obj["Type"] == "MusicTrack":
+                    MusicTrackIds.append(obj["Id"])
+            if(len(MusicTrackIds) == 0):
+                print("No music tracks found.")
+                exit(8)
+            MusicPlaylistContainerIds = []
             Tempos = {}
             data = json.load(json_file)
             objc = 0
