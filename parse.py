@@ -181,14 +181,23 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                             for trchild in segobj["ChildIds"]:
                                                 for trobj in data["Objects"]:
                                                     if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
-                                                        if(trobj["Sounds"]):                          
+                                                        if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                            if(trobj["Sounds"]):                          
+                                                                vol = trobj["Properties"]["ParameterValues"][0]
+                                                                print("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                print_list.append("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+
+                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                print("                    Src GinsorID: ", mushash)
+                                                                print_list.append("                    Src GinsorID: " + mushash + "\n")
+                                                        elif(trobj["Properties"]["ParameterCount"] == 0):
                                                             mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                             print("                Src GinsorID: ", mushash)
                                                             print_list.append("                Src GinsorID: " + mushash + "\n")
-                                                        elif(trobj["MusicCues"]):
-                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["MusicCues"][0]["Id"]:x}', 8), 8).upper()
-                                                            print("                Src GinsorID: ", mushash)
-                                                            print_list.append("                Src GinsorID: " + mushash + "\n")
+                                                        #elif(trobj["MusicCues"]):
+                                                            #mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["MusicCues"][0]["Id"]:x}', 8), 8).upper()
+                                                            #print("                    Src GinsorID: ", mushash)
+                                                            #print_list.append("                    Src GinsorID: " + mushash + "\n")
                                 elif(child["Type"] == "RandomContinuous"):
                                     print("        RandomContinuous #{g}".format(g=g))
                                     print("            RandomContinuous Loop Count:", child["LoopCount"])
@@ -221,9 +230,19 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                     for trchild in segobj["ChildIds"]:
                                                         for trobj in data["Objects"]:
                                                             if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
-                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                print("                    Src GinsorID: ", mushash)
-                                                                print_list.append("                    Src GinsorID: " + mushash + "\n")
+                                                                if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                    if(trobj["Sounds"]):                          
+                                                                        vol = trobj["Properties"]["ParameterValues"][0]
+                                                                        print("                    MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                        print_list.append("                    MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+
+                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                        print("                        Src GinsorID: ", mushash)
+                                                                        print_list.append("                        Src GinsorID: " + mushash + "\n")
+                                                                elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                    print("                    Src GinsorID: ", mushash)
+                                                                    print_list.append("                    Src GinsorID: " + mushash + "\n")
                                         i+=1
                                 elif(child["Type"] == "SequenceContinuous"):
                                     print("            SequenceContinuous #{g}".format(g=g))
@@ -258,9 +277,19 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                     for trchild in segobj["ChildIds"]:
                                                         for trobj in data["Objects"]:
                                                             if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
-                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                print("                        Src GinsorID: ", mushash)
-                                                                print_list.append("                        Src GinsorID: " + mushash + "\n")
+                                                                if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                    if(trobj["Sounds"]):                          
+                                                                        vol = trobj["Properties"]["ParameterValues"][0]
+                                                                        print("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                        print_list.append("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+
+                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                        print("                            Src GinsorID: ", mushash)
+                                                                        print_list.append("                            Src GinsorID: " + mushash + "\n")
+                                                                elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                    print("                        Src GinsorID: ", mushash)
+                                                                    print_list.append("                        Src GinsorID: " + mushash + "\n")
                                         elif(childchild["Type"] == "RandomStep"):
                                             print("                RandomStep #{k}".format(k=k))
                                             print("                    RandomStep Loop Count:", childchild["LoopCount"])
@@ -291,9 +320,19 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                         for trchild in segobj["ChildIds"]:
                                                             for trobj in data["Objects"]:
                                                                 if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
-                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                    print("                            Src GinsorID: ", mushash)
-                                                                    print_list.append("                            Src GinsorID: " + mushash + "\n")
+                                                                    if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                        if(trobj["Sounds"]):                          
+                                                                            vol = trobj["Properties"]["ParameterValues"][0]
+                                                                            print("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                            print_list.append("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+
+                                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                            print("                                Src GinsorID: ", mushash)
+                                                                            print_list.append("                                Src GinsorID: " + mushash + "\n")
+                                                                    elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                        print("                            Src GinsorID: ", mushash)
+                                                                        print_list.append("                            Src GinsorID: " + mushash + "\n")
                                         elif(childchild["Type"] == "SequenceStep"):
                                             print("                SequenceStep #{k}".format(k=k))
                                             print("                    SequenceStep Loop Count:", childchild["LoopCount"])
@@ -324,9 +363,19 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                         for trchild in segobj["ChildIds"]:
                                                             for trobj in data["Objects"]:
                                                                 if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
-                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                    print("                            Src GinsorID: ", mushash)
-                                                                    print_list.append("                            Src GinsorID: " + mushash + "\n")
+                                                                    if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                        if(trobj["Sounds"]):                          
+                                                                            vol = trobj["Properties"]["ParameterValues"][0]
+                                                                            print("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                            print_list.append("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+
+                                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                            print("                    Src GinsorID: ", mushash)
+                                                                            print_list.append("                    Src GinsorID: " + mushash + "\n")
+                                                                    elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                        print("                Src GinsorID: ", mushash)
+                                                                        print_list.append("                Src GinsorID: " + mushash + "\n")
                                         i+=1
                                         k+=1
                                 i+=1
