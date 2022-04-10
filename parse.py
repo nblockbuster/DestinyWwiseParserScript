@@ -58,7 +58,7 @@ if (len(sys.argv) >= 3):
         version = "d1"
     if(sys.argv[2] == "prebl"):
         version = "prebl"
-elif (len(sys.argv) >= 3):
+elif (len(sys.argv) >= 4):
     if(sys.argv[3] == "wav" or sys.argv[3] == "wavexport"):
         wavexport = True
     if(sys.argv[3] == "d1"):
