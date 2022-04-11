@@ -12,7 +12,8 @@ from math import floor
 #PUT YOUR OWN PATHS HERE
 #!!!!
 bnk_directory = "E:\\DestinyMusic\\TWQBnks"
-packages_path = "C:\\Steam SSD Games\\steamapps\\Common\\Destiny 2\\packages"
+#packages_path = "C:\\Steam SSD Games\\steamapps\\Common\\Destiny 2\\packages"
+packages_path = "D:\\D2_Backups\\LastBL\\packages"
 #!!!!
 #PUT YOUR OWN PATHS HERE
 
@@ -214,8 +215,8 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                             print_list.append("        {ttype} Loop Count: ".format(ttype=list["Type"]) + str(list["LoopCount"]) + "\n")
                             print_list.append("        {ttype} Avoid Repeat Count: ".format(ttype=list["Type"]) + str(list["AvoidRepeatCount"]) + "\n")
                             i = 0
+                            g = 0
                             for child in list["Children"]:
-                                g = 0
                                 if(child["Type"] == "MusicSegment"):
                                     for segobj in data["Objects"]:
                                         if segobj["Id"] == child["SegmentId"] and segobj["Type"] == "MusicSegment":
@@ -444,7 +445,55 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                         mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                         print("                Src GinsorID: ", mushash)
                                                                         print_list.append("                Src GinsorID: " + mushash + "\n")
-                                                                        GinsorIds.append(mushash)
+                                                                        GinsorIds.append(mushash)                
+                                        i+=1
+                                        k+=1
+                                elif child["Type"] == "RandomStep":
+                                    print("            RandomStep #{g}".format(g=g))
+                                    print("                RandomStep Loop Count:", child["LoopCount"])
+                                    print("                RandomStep Avoid Repeat Count:", child["AvoidRepeatCount"])
+                                    print_list.append("            RandomStep #{g}".format(g=g) + "\n")
+                                    print_list.append("                RandomStep Loop Count: " + str(child["LoopCount"]) + "\n")
+                                    print_list.append("                RandomStep Avoid Repeat Count: " + str(child["AvoidRepeatCount"]) + "\n")
+                                    i = 0
+                                    k = 0
+                                    for segchild2 in child["Children"]:
+                                        for segobj2 in data["Objects"]:
+                                            if segobj2["Id"] == segchild2["SegmentId"] and segobj2["Type"] == "MusicSegment":
+                                                curtempo = segobj2["Tempo"]
+                                                if(curtempo == 120.0):
+                                                    curtempo = "Default"
+                                                time_up = segobj2["TimeSignatureUpper"]
+                                                time_low = segobj2["TimeSignatureLower"]
+                                                timesig = ""
+                                                if(time_up == 4 and time_low == 4):
+                                                    timesig = "Default (4/4)"
+                                                else:
+                                                    timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
+                                                if(segobj2["Properties"]["ParameterCount"] != 0 and segobj2["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                    vol =  segobj2["Properties"]["ParameterValues"][0]
+                                                    print("                    MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
+                                                    print_list.append("                    MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
+                                                else:
+                                                    print("                    MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
+                                                    print_list.append("                    MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
+                                                for trchild in segobj2["ChildIds"]:
+                                                    for trobj in data["Objects"]:
+                                                        if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
+                                                            if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                if(trobj["Sounds"]):                          
+                                                                    vol = trobj["Properties"]["ParameterValues"][0]
+                                                                    print("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                    print_list.append("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                    print("                            Src GinsorID: ", mushash)
+                                                                    print_list.append("                            Src GinsorID: " + mushash + "\n")
+                                                                    GinsorIds.append(mushash)
+                                                            elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                print("                        Src GinsorID: ", mushash)
+                                                                print_list.append("                        Src GinsorID: " + mushash + "\n")
+                                                                GinsorIds.append(mushash)
                                         i+=1
                                         k+=1
                                 i+=1
