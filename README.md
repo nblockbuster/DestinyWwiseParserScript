@@ -2,9 +2,15 @@
 Python script to create and parse .json files created by [WwiseParser](https://github.com/xyx0826/WwiseParser), semi specialized for Destiny and Destiny 2
 
 ## Usage
-`parse.py <path to .bnk file>`
-If you are using a file in the bnk directory, either use the full path, or open parse.py in notepad and change the "bnk_directory" path to use just the name.  
+`parse.py <.bnk file name/hash/path>`
+Note: If you just use the hash or name, you must set either the bnk_directory or packages_path inside parse.py.
+
 [Helpful list of all bnks linked to an activity](https://gist.github.com/nblockbuster/71c61328d3106d101f26751998588ac6)
 
+
+#### Optional Command Line Arguments
+`parse.py <path to bnk file/bnk file name(0000-0000)/bnk hash(xxxxxx80)> wav/wavconv/d1/prebl wav/wavconv/d1/prebl`
+- wav/wavconv: Auto-exports all wavs used in that bnk. (Requires setting packages path in the file).
+- d1/prebl: Untested, but should switch to pre-bl or d1 version for wav/bnk extraction. (Requires setting packages path in the file).
 ## Planned Features
 - GUI
