@@ -5,8 +5,9 @@ Python script to create and parse .json files created by [WwiseParser](https://g
 `parse.py <.bnk file name/hash/path>`
 Note: If you just use the hash or name, you must set either the bnk_directory or packages_path inside parse.py.
 
-[Helpful list of all bnks linked to an activity](https://gist.github.com/nblockbuster/71c61328d3106d101f26751998588ac6)
-
+Helpful list of all bnks linked to an activity:
+- [Witch Queen List](https://gist.github.com/nblockbuster/71c61328d3106d101f26751998588ac6) (being updated as more gets added)
+- [Beyond Light List](https://gist.github.com/nblockbuster/7151b8b66632c70e2649d40ffd614544)
 
 #### Optional Command Line Arguments
 `parse.py <path to bnk file/bnk file name(0000-0000)/bnk hash(xxxxxx80)> wav/wavconv/d1/prebl wav/wavconv/d1/prebl`
