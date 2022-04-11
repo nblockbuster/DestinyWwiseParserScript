@@ -165,109 +165,49 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                     curtempo = obj["Tempo"]
                     if(curtempo == 120.0):
                         curtempo = "Default/120.0"
-                    #print(f"MusicSwitchContainer #{o} (" + str(obj["Id"]) + ") | Tempo:", curtempo)
-                    #print_list.append(f"MusicSwitchContainer #{o} (" + str(obj["Id"]) + ") | Tempo: " + str(curtempo) + "\n")
+                    print(f"MusicSwitchContainer #{o} (" + str(obj["Id"]) + ") | Tempo:", curtempo, "\n")
+                    print_list.append(f"MusicSwitchContainer #{o} (" + str(obj["Id"]) + ") | Tempo: " + str(curtempo) + "\n\n")
+                    p = 0
                     for child in obj["ChildIds"]:
                         for obj2 in data["Objects"]:
                             if obj2["Id"] == child and obj2["Type"] == "MusicPlaylistContainer":
-                                MusicPlaylistContainerIds.append(child)
-                        if(obj2["Id"] == child and obj2["Properties"]["ParentId"] == 0):
-                            continue
-                    o+=1
-                objc+=1
-                p = 0
-            for playlist in MusicPlaylistContainerIds:
-                for obj in data["Objects"]:
-                    if obj["Id"] == playlist and obj["Type"] == "MusicSwitchContainer":
-                        continue
-                    if obj["Id"] == playlist and obj["Type"] == "MusicPlaylistContainer":
-                        curtempo = obj["Tempo"]
-                        if(curtempo == 120.0):
-                            curtempo = "Default/120.0"
-                        time_up = obj["TimeSignatureUpper"]
-                        time_low = obj["TimeSignatureLower"]
-                        timesig = ""
-                        if(time_up == 4 and time_low == 4):
-                            timesig = "Default (4/4)"
-                        else:
-                            timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
-                        new = "\n"
-                        if(p==0):
-                            new=""
-                        if(obj["Properties"]["ParameterCount"] > 0 and obj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                            vol = obj["Properties"]["ParameterValues"][0]
-                            print(f"{new}MusicPlaylistContainer #{p} (" + str(obj["Id"]) + ") | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(new=new, vol=vol, tempo=curtempo, timesig=timesig))
-                            print_list.append(f"{new}MusicPlaylistContainer #{p} (" + str(obj["Id"]) + ") | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(new=new, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
-                        else:
-                            print(f"{new}MusicPlaylistContainer #{p} (" + str(obj["Id"]) + ") | Tempo: {tempo} | Time Signature: {timesig}".format(new=new,tempo=curtempo, timesig=timesig))
-                            print_list.append(f"{new}MusicPlaylistContainer #{p} (" + str(obj["Id"]) + ") | Tempo: {tempo} | Time Signature: {timesig}".format(new=new, tempo=curtempo, timesig=timesig) + "\n")
-                        
-                        if(obj["Tempo"] != 0):
-                            Tempos[obj["Id"]] = obj["Tempo"]
-                        list = obj["Playlist"]
-                        l = 0
-                        #if(list["Type"] == "SequenceContinuous"):
-                        if(list["ChildCount"] != 0):
-                            print("    {ttype} #{l}".format(ttype=list["Type"], l=l))
-                            print("        {ttype} Loop Count: {loop}".format(ttype=list["Type"], loop=list["LoopCount"]))
-                            print("        {ttype} Avoid Repeat Count: {repeat}".format(ttype=list["Type"], repeat=list["AvoidRepeatCount"]))
-                            print_list.append("    {ttype} #{l}".format(ttype=list["Type"], l=l) + "\n")
-                            print_list.append("        {ttype} Loop Count: ".format(ttype=list["Type"]) + str(list["LoopCount"]) + "\n")
-                            print_list.append("        {ttype} Avoid Repeat Count: ".format(ttype=list["Type"]) + str(list["AvoidRepeatCount"]) + "\n")
-                            i = 0
-                            g = 0
-                            for child in list["Children"]:
-                                if(child["Type"] == "MusicSegment"):
-                                    for segobj in data["Objects"]:
-                                        if segobj["Id"] == child["SegmentId"] and segobj["Type"] == "MusicSegment":
-                                            curtempo = segobj["Tempo"]
-                                            if(curtempo == 120.0):
-                                                curtempo = "Default"
-                                            time_up = segobj["TimeSignatureUpper"]
-                                            time_low = segobj["TimeSignatureLower"]
-                                            timesig = ""
-                                            if(time_up == 4 and time_low == 4):
-                                                timesig = "Default (4/4)"
-                                            else:
-                                                timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
-                                            if(segobj["Properties"]["ParameterCount"] != 0 and segobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                                                vol =  segobj["Properties"]["ParameterValues"][0]
-                                                print("            MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
-                                                print_list.append("            MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
-                                            else:
-                                                print("            MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
-                                                print_list.append("            MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
-                                                
-                                            for trchild in segobj["ChildIds"]:
-                                                for trobj in data["Objects"]:
-                                                    if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
-                                                        if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                                                            if(trobj["Sounds"]):                          
-                                                                vol = trobj["Properties"]["ParameterValues"][0]
-                                                                print("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
-                                                                print_list.append("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
-
-                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                print("                    Src GinsorID: ", mushash)
-                                                                print_list.append("                    Src GinsorID: " + mushash + "\n")
-                                                                GinsorIds.append(mushash)
-                                                        elif(trobj["Properties"]["ParameterCount"] == 0):
-                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                            print("                Src GinsorID: ", mushash)
-                                                            print_list.append("                Src GinsorID: " + mushash + "\n")
-                                                            GinsorIds.append(mushash)
-                                                        #elif(trobj["MusicCues"]):
-                                                            #mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["MusicCues"][0]["Id"]:x}', 8), 8).upper()
-                                                            #print("                    Src GinsorID: ", mushash)
-                                                            #print_list.append("                    Src GinsorID: " + mushash + "\n")
-                                elif(child["Type"] == "RandomContinuous"):
-                                    print("        RandomContinuous #{g}".format(g=g))
-                                    print("            RandomContinuous Loop Count:", child["LoopCount"])
-                                    print("            RandomContinuous Avoid Repeat Count:", child["AvoidRepeatCount"])
-                                    print_list.append("        RandomContinuous #{g}".format(g=g) + "\n")
-                                    print_list.append("            RandomContinuous Loop Count: " + str(child["LoopCount"]) + "\n")
-                                    print_list.append("            RandomContinuous Avoid Repeat Count: " + str(child["AvoidRepeatCount"]) + "\n")
+                                #MusicPlaylistContainerIds.append(child)
+                                
+                                #if obj["Id"] == playlist and obj["Type"] == "MusicSwitchContainer":
+                                #continue
+                            #if obj["Id"] == playlist and obj["Type"] == "MusicPlaylistContainer":
+                                curtempo = obj2["Tempo"]
+                                if(curtempo == 120.0):
+                                    curtempo = "Default/120.0"
+                                time_up = obj2["TimeSignatureUpper"]
+                                time_low = obj2["TimeSignatureLower"]
+                                timesig = ""
+                                if(time_up == 4 and time_low == 4):
+                                    timesig = "Default (4/4)"
+                                else:
+                                    timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
+                                new = "\n"
+                                if(p==0):
+                                    new=""
+                                if(obj2["Properties"]["ParameterCount"] > 0 and obj2["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                    vol = obj2["Properties"]["ParameterValues"][0]
+                                    print(f"{new}MusicPlaylistContainer #{p} (" + str(obj2["Id"]) + ") | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(new=new, vol=vol, tempo=curtempo, timesig=timesig))
+                                    print_list.append(f"{new}MusicPlaylistContainer #{p} (" + str(obj2["Id"]) + ") | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(new=new, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
+                                else:
+                                    print(f"{new}MusicPlaylistContainer #{p} (" + str(obj2["Id"]) + ") | Tempo: {tempo} | Time Signature: {timesig}".format(new=new,tempo=curtempo, timesig=timesig))
+                                    print_list.append(f"{new}MusicPlaylistContainer #{p} (" + str(obj2["Id"]) + ") | Tempo: {tempo} | Time Signature: {timesig}".format(new=new, tempo=curtempo, timesig=timesig) + "\n")
+                                list = obj2["Playlist"]
+                                l = 0
+                                #if(list["Type"] == "SequenceContinuous"):
+                                if(list["ChildCount"] != 0):
+                                    print("    {ttype} #{l}".format(ttype=list["Type"], l=l))
+                                    print("        {ttype} Loop Count: {loop}".format(ttype=list["Type"], loop=list["LoopCount"]))
+                                    print("        {ttype} Avoid Repeat Count: {repeat}".format(ttype=list["Type"], repeat=list["AvoidRepeatCount"]))
+                                    print_list.append("    {ttype} #{l}".format(ttype=list["Type"], l=l) + "\n")
+                                    print_list.append("        {ttype} Loop Count: ".format(ttype=list["Type"]) + str(list["LoopCount"]) + "\n")
+                                    print_list.append("        {ttype} Avoid Repeat Count: ".format(ttype=list["Type"]) + str(list["AvoidRepeatCount"]) + "\n")
                                     i = 0
+                                    g = 0
                                     for child in list["Children"]:
                                         if(child["Type"] == "MusicSegment"):
                                             for segobj in data["Objects"]:
@@ -284,222 +224,284 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                         timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
                                                     if(segobj["Properties"]["ParameterCount"] != 0 and segobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
                                                         vol =  segobj["Properties"]["ParameterValues"][0]
-                                                        print("                MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
-                                                        print_list.append("                MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
+                                                        print("            MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
+                                                        print_list.append("            MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
                                                     else:
-                                                        print("                MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
-                                                        print_list.append("                MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
+                                                        print("            MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
+                                                        print_list.append("            MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
+                                                        
                                                     for trchild in segobj["ChildIds"]:
                                                         for trobj in data["Objects"]:
                                                             if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
                                                                 if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
                                                                     if(trobj["Sounds"]):                          
                                                                         vol = trobj["Properties"]["ParameterValues"][0]
-                                                                        print("                    MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
-                                                                        print_list.append("                    MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+                                                                        print("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                        print_list.append("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
 
                                                                         mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                        print("                        Src GinsorID: ", mushash)
-                                                                        print_list.append("                        Src GinsorID: " + mushash + "\n")
+                                                                        print("                    Src GinsorID: ", mushash)
+                                                                        print_list.append("                    Src GinsorID: " + mushash + "\n")
                                                                         GinsorIds.append(mushash)
                                                                 elif(trobj["Properties"]["ParameterCount"] == 0):
                                                                     mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                    print("                    Src GinsorID: ", mushash)
-                                                                    print_list.append("                    Src GinsorID: " + mushash + "\n")
+                                                                    print("                Src GinsorID: ", mushash)
+                                                                    print_list.append("                Src GinsorID: " + mushash + "\n")
                                                                     GinsorIds.append(mushash)
-                                        i+=1
-                                elif(child["Type"] == "SequenceContinuous"):
-                                    print("            SequenceContinuous #{g}".format(g=g))
-                                    print("                SequenceContinuous Loop Count:", child["LoopCount"])
-                                    print("                SequenceContinuous Avoid Repeat Count:", child["AvoidRepeatCount"])
-                                    print_list.append("            SequenceContinuous #{g}".format(g=g) + "\n")
-                                    print_list.append("                SequenceContinuous Loop Count: " + str(child["LoopCount"]) + "\n")
-                                    print_list.append("                SequenceContinuous Avoid Repeat Count: " + str(child["AvoidRepeatCount"]) + "\n")
-                                    i = 0
-                                    k = 0
-                                    for childchild in child["Children"]:
-                                        if(childchild["Type"] == "MusicSegment"):
-                                            for segobj in data["Objects"]:
-                                                if segobj["Id"] == childchild["SegmentId"] and segobj["Type"] == "MusicSegment":
-                                                    curtempo = segobj["Tempo"]
-                                                    if(curtempo == 120.0):
-                                                        curtempo = "Default"
-                                                    time_up = segobj["TimeSignatureUpper"]
-                                                    time_low = segobj["TimeSignatureLower"]
-                                                    timesig = ""
-                                                    if(time_up == 4 and time_low == 4):
-                                                        timesig = "Default (4/4)"
-                                                    else:
-                                                        timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
-                                                    if(segobj["Properties"]["ParameterCount"] != 0 and segobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                                                        vol =  segobj["Properties"]["ParameterValues"][0]
-                                                        print("                    MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
-                                                        print_list.append("                    MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
-                                                    else:
-                                                        print("                    MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
-                                                        print_list.append("                    MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
-                                                    for trchild in segobj["ChildIds"]:
-                                                        for trobj in data["Objects"]:
-                                                            if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
-                                                                if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                                                                    if(trobj["Sounds"]):                          
-                                                                        vol = trobj["Properties"]["ParameterValues"][0]
-                                                                        print("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
-                                                                        print_list.append("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+                                                                #elif(trobj["MusicCues"]):
+                                                                    #mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["MusicCues"][0]["Id"]:x}', 8), 8).upper()
+                                                                    #print("                    Src GinsorID: ", mushash)
+                                                                    #print_list.append("                    Src GinsorID: " + mushash + "\n")
+                                        elif(child["Type"] == "RandomContinuous"):
+                                            print("        RandomContinuous #{g}".format(g=g))
+                                            print("            RandomContinuous Loop Count:", child["LoopCount"])
+                                            print("            RandomContinuous Avoid Repeat Count:", child["AvoidRepeatCount"])
+                                            print_list.append("        RandomContinuous #{g}".format(g=g) + "\n")
+                                            print_list.append("            RandomContinuous Loop Count: " + str(child["LoopCount"]) + "\n")
+                                            print_list.append("            RandomContinuous Avoid Repeat Count: " + str(child["AvoidRepeatCount"]) + "\n")
+                                            i = 0
+                                            for child in list["Children"]:
+                                                if(child["Type"] == "MusicSegment"):
+                                                    for segobj in data["Objects"]:
+                                                        if segobj["Id"] == child["SegmentId"] and segobj["Type"] == "MusicSegment":
+                                                            curtempo = segobj["Tempo"]
+                                                            if(curtempo == 120.0):
+                                                                curtempo = "Default"
+                                                            time_up = segobj["TimeSignatureUpper"]
+                                                            time_low = segobj["TimeSignatureLower"]
+                                                            timesig = ""
+                                                            if(time_up == 4 and time_low == 4):
+                                                                timesig = "Default (4/4)"
+                                                            else:
+                                                                timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
+                                                            if(segobj["Properties"]["ParameterCount"] != 0 and segobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                vol =  segobj["Properties"]["ParameterValues"][0]
+                                                                print("                MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
+                                                                print_list.append("                MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
+                                                            else:
+                                                                print("                MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
+                                                                print_list.append("                MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
+                                                            for trchild in segobj["ChildIds"]:
+                                                                for trobj in data["Objects"]:
+                                                                    if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
+                                                                        if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                            if(trobj["Sounds"]):                          
+                                                                                vol = trobj["Properties"]["ParameterValues"][0]
+                                                                                print("                    MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                                print_list.append("                    MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
 
-                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                        print("                            Src GinsorID: ", mushash)
-                                                                        print_list.append("                            Src GinsorID: " + mushash + "\n")
-                                                                        GinsorIds.append(mushash)
-                                                                elif(trobj["Properties"]["ParameterCount"] == 0):
-                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                    print("                        Src GinsorID: ", mushash)
-                                                                    print_list.append("                        Src GinsorID: " + mushash + "\n")
-                                                                    GinsorIds.append(mushash)
-                                        elif(childchild["Type"] == "RandomStep"):
-                                            print("                RandomStep #{k}".format(k=k))
-                                            print("                    RandomStep Loop Count:", childchild["LoopCount"])
-                                            print("                    RandomStep Avoid Repeat Count:", childchild["AvoidRepeatCount"])
-                                            print_list.append("                RandomStep #{k}".format(k=k) + "\n")
-                                            print_list.append("                    RandomStep Loop Count: " + str(childchild["LoopCount"]) + "\n")
-                                            print_list.append("                    RandomStep Avoid Repeat Count: " + str(childchild["AvoidRepeatCount"]) + "\n")
-                                            for segchild in childchild["Children"]:
-                                                for segobj in data["Objects"]:
-                                                    if segobj["Id"] == segchild["SegmentId"] and segobj["Type"] == "MusicSegment":
-                                                        curtempo = segobj["Tempo"]
-                                                        if(curtempo == 120.0):
-                                                            curtempo = "Default"
-                                                        time_up = segobj["TimeSignatureUpper"]
-                                                        time_low = segobj["TimeSignatureLower"]
-                                                        timesig = ""
-                                                        if(time_up == 4 and time_low == 4):
-                                                            timesig = "Default (4/4)"
-                                                        else:
-                                                            timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
-                                                        if(segobj["Properties"]["ParameterCount"] != 0 and segobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                                                            vol =  segobj["Properties"]["ParameterValues"][0]
-                                                            print("                        MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
-                                                            print_list.append("                        MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
-                                                        else:
-                                                            print("                        MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
-                                                            print_list.append("                        MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
-                                                        for trchild in segobj["ChildIds"]:
-                                                            for trobj in data["Objects"]:
-                                                                if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
-                                                                    if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                                                                        if(trobj["Sounds"]):                          
-                                                                            vol = trobj["Properties"]["ParameterValues"][0]
-                                                                            print("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
-                                                                            print_list.append("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
-
-                                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                            print("                                Src GinsorID: ", mushash)
-                                                                            print_list.append("                                Src GinsorID: " + mushash + "\n")
-                                                                            GinsorIds.append(mushash)
-                                                                    elif(trobj["Properties"]["ParameterCount"] == 0):
-                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                        print("                            Src GinsorID: ", mushash)
-                                                                        print_list.append("                            Src GinsorID: " + mushash + "\n")
-                                                                        GinsorIds.append(mushash)
-                                        elif(childchild["Type"] == "SequenceStep"):
-                                            print("                SequenceStep #{k}".format(k=k))
-                                            print("                    SequenceStep Loop Count:", childchild["LoopCount"])
-                                            print("                    SequenceStep Avoid Repeat Count:", childchild["AvoidRepeatCount"])
-                                            print_list.append("                SequenceStep #{k}".format(k=k) + "\n")
-                                            print_list.append("                    SequenceStep Loop Count: " + str(childchild["LoopCount"]) + "\n")
-                                            print_list.append("                    SequenceStep Avoid Repeat Count: " + str(childchild["AvoidRepeatCount"]) + "\n")
-                                            for segchild in childchild["Children"]:
-                                                for segobj in data["Objects"]:
-                                                    if segobj["Id"] == childchild["SegmentId"] and segobj["Type"] == "MusicSegment":
-                                                        curtempo = segobj["Tempo"]
-                                                        if(curtempo == 120.0):
-                                                            curtempo = "Default"
-                                                        time_up = segobj["TimeSignatureUpper"]
-                                                        time_low = segobj["TimeSignatureLower"]
-                                                        timesig = ""
-                                                        if(time_up == 4 and time_low == 4):
-                                                            timesig = "Default (4/4)"
-                                                        else:
-                                                            timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
-                                                        if(segobj["Properties"]["ParameterCount"] != 0 and segobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                                                            vol =  segobj["Properties"]["ParameterValues"][0]
-                                                            print("            MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
-                                                            print_list.append("            MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
-                                                        else:
-                                                            print("            MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
-                                                            print_list.append("            MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
-                                                        for trchild in segobj["ChildIds"]:
-                                                            for trobj in data["Objects"]:
-                                                                if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
-                                                                    if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                                                                        if(trobj["Sounds"]):                          
-                                                                            vol = trobj["Properties"]["ParameterValues"][0]
-                                                                            print("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
-                                                                            print_list.append("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
-
+                                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                print("                        Src GinsorID: ", mushash)
+                                                                                print_list.append("                        Src GinsorID: " + mushash + "\n")
+                                                                                GinsorIds.append(mushash)
+                                                                        elif(trobj["Properties"]["ParameterCount"] == 0):
                                                                             mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                             print("                    Src GinsorID: ", mushash)
                                                                             print_list.append("                    Src GinsorID: " + mushash + "\n")
                                                                             GinsorIds.append(mushash)
+                                                i+=1
+                                        elif(child["Type"] == "SequenceContinuous"):
+                                            print("            SequenceContinuous #{g}".format(g=g))
+                                            print("                SequenceContinuous Loop Count:", child["LoopCount"])
+                                            print("                SequenceContinuous Avoid Repeat Count:", child["AvoidRepeatCount"])
+                                            print_list.append("            SequenceContinuous #{g}".format(g=g) + "\n")
+                                            print_list.append("                SequenceContinuous Loop Count: " + str(child["LoopCount"]) + "\n")
+                                            print_list.append("                SequenceContinuous Avoid Repeat Count: " + str(child["AvoidRepeatCount"]) + "\n")
+                                            i = 0
+                                            k = 0
+                                            for childchild in child["Children"]:
+                                                if(childchild["Type"] == "MusicSegment"):
+                                                    for segobj in data["Objects"]:
+                                                        if segobj["Id"] == childchild["SegmentId"] and segobj["Type"] == "MusicSegment":
+                                                            curtempo = segobj["Tempo"]
+                                                            if(curtempo == 120.0):
+                                                                curtempo = "Default"
+                                                            time_up = segobj["TimeSignatureUpper"]
+                                                            time_low = segobj["TimeSignatureLower"]
+                                                            timesig = ""
+                                                            if(time_up == 4 and time_low == 4):
+                                                                timesig = "Default (4/4)"
+                                                            else:
+                                                                timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
+                                                            if(segobj["Properties"]["ParameterCount"] != 0 and segobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                vol =  segobj["Properties"]["ParameterValues"][0]
+                                                                print("                    MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
+                                                                print_list.append("                    MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
+                                                            else:
+                                                                print("                    MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
+                                                                print_list.append("                    MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
+                                                            for trchild in segobj["ChildIds"]:
+                                                                for trobj in data["Objects"]:
+                                                                    if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
+                                                                        if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                            if(trobj["Sounds"]):                          
+                                                                                vol = trobj["Properties"]["ParameterValues"][0]
+                                                                                print("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                                print_list.append("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+
+                                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                print("                            Src GinsorID: ", mushash)
+                                                                                print_list.append("                            Src GinsorID: " + mushash + "\n")
+                                                                                GinsorIds.append(mushash)
+                                                                        elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                            print("                        Src GinsorID: ", mushash)
+                                                                            print_list.append("                        Src GinsorID: " + mushash + "\n")
+                                                                            GinsorIds.append(mushash)
+                                                elif(childchild["Type"] == "RandomStep"):
+                                                    print("                RandomStep #{k}".format(k=k))
+                                                    print("                    RandomStep Loop Count:", childchild["LoopCount"])
+                                                    print("                    RandomStep Avoid Repeat Count:", childchild["AvoidRepeatCount"])
+                                                    print_list.append("                RandomStep #{k}".format(k=k) + "\n")
+                                                    print_list.append("                    RandomStep Loop Count: " + str(childchild["LoopCount"]) + "\n")
+                                                    print_list.append("                    RandomStep Avoid Repeat Count: " + str(childchild["AvoidRepeatCount"]) + "\n")
+                                                    for segchild in childchild["Children"]:
+                                                        for segobj in data["Objects"]:
+                                                            if segobj["Id"] == segchild["SegmentId"] and segobj["Type"] == "MusicSegment":
+                                                                curtempo = segobj["Tempo"]
+                                                                if(curtempo == 120.0):
+                                                                    curtempo = "Default"
+                                                                time_up = segobj["TimeSignatureUpper"]
+                                                                time_low = segobj["TimeSignatureLower"]
+                                                                timesig = ""
+                                                                if(time_up == 4 and time_low == 4):
+                                                                    timesig = "Default (4/4)"
+                                                                else:
+                                                                    timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
+                                                                if(segobj["Properties"]["ParameterCount"] != 0 and segobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                    vol =  segobj["Properties"]["ParameterValues"][0]
+                                                                    print("                        MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
+                                                                    print_list.append("                        MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
+                                                                else:
+                                                                    print("                        MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
+                                                                    print_list.append("                        MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
+                                                                for trchild in segobj["ChildIds"]:
+                                                                    for trobj in data["Objects"]:
+                                                                        if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
+                                                                            if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                                if(trobj["Sounds"]):                          
+                                                                                    vol = trobj["Properties"]["ParameterValues"][0]
+                                                                                    print("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                                    print_list.append("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+
+                                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                    print("                                Src GinsorID: ", mushash)
+                                                                                    print_list.append("                                Src GinsorID: " + mushash + "\n")
+                                                                                    GinsorIds.append(mushash)
+                                                                            elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                print("                            Src GinsorID: ", mushash)
+                                                                                print_list.append("                            Src GinsorID: " + mushash + "\n")
+                                                                                GinsorIds.append(mushash)
+                                                elif(childchild["Type"] == "SequenceStep"):
+                                                    print("                SequenceStep #{k}".format(k=k))
+                                                    print("                    SequenceStep Loop Count:", childchild["LoopCount"])
+                                                    print("                    SequenceStep Avoid Repeat Count:", childchild["AvoidRepeatCount"])
+                                                    print_list.append("                SequenceStep #{k}".format(k=k) + "\n")
+                                                    print_list.append("                    SequenceStep Loop Count: " + str(childchild["LoopCount"]) + "\n")
+                                                    print_list.append("                    SequenceStep Avoid Repeat Count: " + str(childchild["AvoidRepeatCount"]) + "\n")
+                                                    for segchild in childchild["Children"]:
+                                                        for segobj in data["Objects"]:
+                                                            if segobj["Id"] == childchild["SegmentId"] and segobj["Type"] == "MusicSegment":
+                                                                curtempo = segobj["Tempo"]
+                                                                if(curtempo == 120.0):
+                                                                    curtempo = "Default"
+                                                                time_up = segobj["TimeSignatureUpper"]
+                                                                time_low = segobj["TimeSignatureLower"]
+                                                                timesig = ""
+                                                                if(time_up == 4 and time_low == 4):
+                                                                    timesig = "Default (4/4)"
+                                                                else:
+                                                                    timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
+                                                                if(segobj["Properties"]["ParameterCount"] != 0 and segobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                    vol =  segobj["Properties"]["ParameterValues"][0]
+                                                                    print("            MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
+                                                                    print_list.append("            MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
+                                                                else:
+                                                                    print("            MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
+                                                                    print_list.append("            MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
+                                                                for trchild in segobj["ChildIds"]:
+                                                                    for trobj in data["Objects"]:
+                                                                        if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
+                                                                            if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                                if(trobj["Sounds"]):                          
+                                                                                    vol = trobj["Properties"]["ParameterValues"][0]
+                                                                                    print("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                                    print_list.append("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+
+                                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                    print("                    Src GinsorID: ", mushash)
+                                                                                    print_list.append("                    Src GinsorID: " + mushash + "\n")
+                                                                                    GinsorIds.append(mushash)
+                                                                            elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                print("                Src GinsorID: ", mushash)
+                                                                                print_list.append("                Src GinsorID: " + mushash + "\n")
+                                                                                GinsorIds.append(mushash)                
+                                                i+=1
+                                                k+=1
+                                        elif child["Type"] == "RandomStep":
+                                            print("            RandomStep #{g}".format(g=g))
+                                            print("                RandomStep Loop Count:", child["LoopCount"])
+                                            print("                RandomStep Avoid Repeat Count:", child["AvoidRepeatCount"])
+                                            print_list.append("            RandomStep #{g}".format(g=g) + "\n")
+                                            print_list.append("                RandomStep Loop Count: " + str(child["LoopCount"]) + "\n")
+                                            print_list.append("                RandomStep Avoid Repeat Count: " + str(child["AvoidRepeatCount"]) + "\n")
+                                            i = 0
+                                            k = 0
+                                            for segchild2 in child["Children"]:
+                                                for segobj2 in data["Objects"]:
+                                                    if segobj2["Id"] == segchild2["SegmentId"] and segobj2["Type"] == "MusicSegment":
+                                                        curtempo = segobj2["Tempo"]
+                                                        if(curtempo == 120.0):
+                                                            curtempo = "Default"
+                                                        time_up = segobj2["TimeSignatureUpper"]
+                                                        time_low = segobj2["TimeSignatureLower"]
+                                                        timesig = ""
+                                                        if(time_up == 4 and time_low == 4):
+                                                            timesig = "Default (4/4)"
+                                                        else:
+                                                            timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
+                                                        if(segobj2["Properties"]["ParameterCount"] != 0 and segobj2["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                            vol =  segobj2["Properties"]["ParameterValues"][0]
+                                                            print("                    MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
+                                                            print_list.append("                    MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
+                                                        else:
+                                                            print("                    MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
+                                                            print_list.append("                    MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
+                                                        for trchild in segobj2["ChildIds"]:
+                                                            for trobj in data["Objects"]:
+                                                                if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
+                                                                    if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
+                                                                        if(trobj["Sounds"]):                          
+                                                                            vol = trobj["Properties"]["ParameterValues"][0]
+                                                                            print("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
+                                                                            print_list.append("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
+                                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                            print("                            Src GinsorID: ", mushash)
+                                                                            print_list.append("                            Src GinsorID: " + mushash + "\n")
+                                                                            GinsorIds.append(mushash)
                                                                     elif(trobj["Properties"]["ParameterCount"] == 0):
                                                                         mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                        print("                Src GinsorID: ", mushash)
-                                                                        print_list.append("                Src GinsorID: " + mushash + "\n")
-                                                                        GinsorIds.append(mushash)                
+                                                                        print("                        Src GinsorID: ", mushash)
+                                                                        print_list.append("                        Src GinsorID: " + mushash + "\n")
+                                                                        GinsorIds.append(mushash)
+                                                i+=1
+                                                k+=1
                                         i+=1
-                                        k+=1
-                                elif child["Type"] == "RandomStep":
-                                    print("            RandomStep #{g}".format(g=g))
-                                    print("                RandomStep Loop Count:", child["LoopCount"])
-                                    print("                RandomStep Avoid Repeat Count:", child["AvoidRepeatCount"])
-                                    print_list.append("            RandomStep #{g}".format(g=g) + "\n")
-                                    print_list.append("                RandomStep Loop Count: " + str(child["LoopCount"]) + "\n")
-                                    print_list.append("                RandomStep Avoid Repeat Count: " + str(child["AvoidRepeatCount"]) + "\n")
-                                    i = 0
-                                    k = 0
-                                    for segchild2 in child["Children"]:
-                                        for segobj2 in data["Objects"]:
-                                            if segobj2["Id"] == segchild2["SegmentId"] and segobj2["Type"] == "MusicSegment":
-                                                curtempo = segobj2["Tempo"]
-                                                if(curtempo == 120.0):
-                                                    curtempo = "Default"
-                                                time_up = segobj2["TimeSignatureUpper"]
-                                                time_low = segobj2["TimeSignatureLower"]
-                                                timesig = ""
-                                                if(time_up == 4 and time_low == 4):
-                                                    timesig = "Default (4/4)"
-                                                else:
-                                                    timesig = "{time_up}/{time_low}".format(time_up=time_up, time_low=time_low)
-                                                if(segobj2["Properties"]["ParameterCount"] != 0 and segobj2["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                                                    vol =  segobj2["Properties"]["ParameterValues"][0]
-                                                    print("                    MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig))
-                                                    print_list.append("                    MusicSegment #{i} | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
-                                                else:
-                                                    print("                    MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig))
-                                                    print_list.append("                    MusicSegment #{i} | Tempo: {tempo} | Time Signature: {timesig}".format(i=i, tempo=curtempo, timesig=timesig) + "\n")
-                                                for trchild in segobj2["ChildIds"]:
-                                                    for trobj in data["Objects"]:
-                                                        if trobj["Id"] == trchild and trobj["Type"] == "MusicTrack":
-                                                            if(trobj["Properties"]["ParameterCount"] != 0 and trobj["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
-                                                                if(trobj["Sounds"]):                          
-                                                                    vol = trobj["Properties"]["ParameterValues"][0]
-                                                                    print("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
-                                                                    print_list.append("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
-                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                    print("                            Src GinsorID: ", mushash)
-                                                                    print_list.append("                            Src GinsorID: " + mushash + "\n")
-                                                                    GinsorIds.append(mushash)
-                                                            elif(trobj["Properties"]["ParameterCount"] == 0):
-                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
-                                                                print("                        Src GinsorID: ", mushash)
-                                                                print_list.append("                        Src GinsorID: " + mushash + "\n")
-                                                                GinsorIds.append(mushash)
-                                        i+=1
-                                        k+=1
-                                i+=1
-                                g+=1
-                        l+=1
-                p+=1
+                                        g+=1
+                                l+=1
+                        p+=1       
+                                
+                        if(obj2["Id"] == child and obj2["Properties"]["ParentId"] == 0):
+                            continue
+                    o+=1
+                objc+=1
+                #p = 0
+            #for playlist in MusicPlaylistContainerIds:
+                #for obj in data["Objects"]:
+                    
+                #p+=1
     with open(f"outputs\\{bnkname}.txt", "w") as f:
         for line in print_list:
             f.write(line)
