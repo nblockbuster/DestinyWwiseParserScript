@@ -76,21 +76,21 @@ elif(sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1]
 elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1)):
     bnk_file = sys.argv[1] + ".bnk"
 
-if (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and sys.argv[1][-6:-4] != "80"):
+if (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and (sys.argv[1][-6:-4] != "80" or sys.argv[1][-6:-4] != "81")):
     bnkname = sys.argv[1][-13:-4]
-elif (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and sys.argv[1][-6:-4] != "80"):
+elif (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and (sys.argv[1][-6:-4] != "80" or sys.argv[1][-6:-4] != "81")):
     bnkname = sys.argv[1][-13:-4]
-elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and sys.argv[1][-2:] != "80"):
+elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and (sys.argv[1][-2:] != "80" or sys.argv[1][-2:] != "81")):
     bnkname = sys.argv[1][-9:]
-elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and sys.argv[1][-2:] != "80"):
+elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and (sys.argv[1][-2:] != "80" or sys.argv[1][-2:] != "81")):
     bnkname = sys.argv[1][-9:]
-elif (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and sys.argv[1][-6:-4] == "80"):
+elif (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and (sys.argv[1][-6:-4] == "80" or sys.argv[1][-6:-4] == "81")):
     bnkname = sys.argv[1][-12:-4]
-elif (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and sys.argv[1][-6:-4] == "80"):
+elif (sys.argv[1][-4:] == ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and (sys.argv[1][-6:-4] == "80" or sys.argv[1][-6:-4] == "81")):
     bnkname = sys.argv[1][-12:-4]
-elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and sys.argv[1][-2:] == "80"):
+elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") == -1 or sys.argv[1].find("/") == -1) and (sys.argv[1][-2:] == "80" or sys.argv[1][-2:] == "81")):
     bnkname = sys.argv[1][-8:]
-elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and sys.argv[1][-2:] == "80"):
+elif (sys.argv[1][-4:] != ".bnk" and (sys.argv[1].find("\\") != -1 or sys.argv[1].find("/") != -1) and (sys.argv[1][-2:] == "80" or sys.argv[1][-2:] == "81")):
     bnkname = sys.argv[1][-8:]
 
 #make raw outputs folder
