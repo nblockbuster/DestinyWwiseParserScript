@@ -11,9 +11,10 @@ from math import floor
 
 #PUT YOUR OWN PATHS HERE
 #!!!!
-bnk_directory = "E:\\DestinyMusic\\TWQBnks"
+bnk_directory = ""
 #packages_path = "C:\\Steam SSD Games\\steamapps\\Common\\Destiny 2\\packages"
-packages_path = "D:\\D2_Backups\\LastBL\\packages"
+#packages_path = "D:\\D2_Backups\\LastBL\\packages"
+packages_path = ""
 #!!!!
 #PUT YOUR OWN PATHS HERE
 
@@ -243,7 +244,7 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                         print("                    Src GinsorID: ", mushash)
                                                                         print_list.append("                    Src GinsorID: " + mushash + "\n")
                                                                         GinsorIds.append(mushash)
-                                                                elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                else:
                                                                     mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                     print("                Src GinsorID: ", mushash)
                                                                     print_list.append("                Src GinsorID: " + mushash + "\n")
@@ -294,7 +295,7 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                 print("                        Src GinsorID: ", mushash)
                                                                                 print_list.append("                        Src GinsorID: " + mushash + "\n")
                                                                                 GinsorIds.append(mushash)
-                                                                        elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                        else:
                                                                             mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                             print("                    Src GinsorID: ", mushash)
                                                                             print_list.append("                    Src GinsorID: " + mushash + "\n")
@@ -343,7 +344,7 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                 print("                            Src GinsorID: ", mushash)
                                                                                 print_list.append("                            Src GinsorID: " + mushash + "\n")
                                                                                 GinsorIds.append(mushash)
-                                                                        elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                        else:
                                                                             mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                             print("                        Src GinsorID: ", mushash)
                                                                             print_list.append("                        Src GinsorID: " + mushash + "\n")
@@ -388,7 +389,7 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                     print("                                Src GinsorID: ", mushash)
                                                                                     print_list.append("                                Src GinsorID: " + mushash + "\n")
                                                                                     GinsorIds.append(mushash)
-                                                                            elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                            else:
                                                                                 mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                 print("                            Src GinsorID: ", mushash)
                                                                                 print_list.append("                            Src GinsorID: " + mushash + "\n")
@@ -433,7 +434,7 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                     print("                    Src GinsorID: ", mushash)
                                                                                     print_list.append("                    Src GinsorID: " + mushash + "\n")
                                                                                     GinsorIds.append(mushash)
-                                                                            elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                            else:
                                                                                 mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                 print("                Src GinsorID: ", mushash)
                                                                                 print_list.append("                Src GinsorID: " + mushash + "\n")
@@ -481,7 +482,7 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                             print("                            Src GinsorID: ", mushash)
                                                                             print_list.append("                            Src GinsorID: " + mushash + "\n")
                                                                             GinsorIds.append(mushash)
-                                                                    elif(trobj["Properties"]["ParameterCount"] == 0):
+                                                                    else:
                                                                         mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                         print("                        Src GinsorID: ", mushash)
                                                                         print_list.append("                        Src GinsorID: " + mushash + "\n")
