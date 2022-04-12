@@ -4,7 +4,7 @@ import sys
 import time
 import subprocess
 import zipfile
-from math import floor
+import functions as gf
 
 #bnk_directory is unneeded if you set packages, but it's here for convenience
 #packages_path doesnt matter if you set bnk_directory and dont want wave files to be extracted too.
@@ -17,31 +17,9 @@ bnk_directory = ""
 packages_path = "D:\\Shadowkeep\\packages"
 #!!!!
 #PUT YOUR OWN PATHS HERE
-
-def get_flipped_hex(h, length):
-    if length % 2 != 0:
-        print("Flipped hex length is not even.")
-        return None
     
-    return "".join(reversed([h[:length][i:i + 2] for i in range(0, length, 2)]))
-
-def fill_hex_with_zeros(s, desired_length):
-    return ("0"*desired_length + s)[-desired_length:]
-
-def getPkgId(hash):
-    pkgID = floor((int(get_flipped_hex(hash,8), 16) - 0x80800000) / 8192)
-    return fill_hex_with_zeros("%04X" % pkgID, 4)
-
-def getHashFromFile(file):
-    pkg = file.replace(".bin", "").upper()
-    firsthex_int = int(pkg[:4], 16)
-    secondhex_int = int(pkg[5:], 16)
-    one = firsthex_int*8192
-    two = hex(one + secondhex_int + 2155872256)
-    return get_flipped_hex(two[2:], 8).upper()
-    
-wavexport = False
-version = ""
+wavexport = False #dont touch
+version = "" #dont touch either
 
 wd = os.getcwd()
 
@@ -142,7 +120,7 @@ if not os.path.isfile(bnk_file):
         #bnk_pkg = bnk_file[-13:-9]
         #print("3", bnk_pkg)
     #print(bnkname)
-    dunpacker = "Resources\\Unpacker\\DestinyUnpackerCPP.exe -p \"" + packages_path + "\" -o \"raw_outputs\\" + bnkname + "\" -s " + getHashFromFile(bnkname)
+    dunpacker = "Resources\\Unpacker\\DestinyUnpackerCPP.exe -p \"" + packages_path + "\" -o \"raw_outputs\\" + bnkname + "\" -s " + gf.getHashFromFile(bnkname)
     #print(version)
     if version != "":
         dunpacker += " -v " + version
@@ -268,12 +246,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                         print("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
                                                                         print_list.append("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
 
-                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                        mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                         print("                    Src GinsorID: ", mushash)
                                                                         print_list.append("                    Src GinsorID: " + mushash + "\n")
                                                                         GinsorIds.append(mushash)
                                                                 elif(trobj["SoundCount"] != 0):
-                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                    mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                     print("                Src GinsorID: ", mushash)
                                                                     print_list.append("                Src GinsorID: " + mushash + "\n")
                                                                     GinsorIds.append(mushash)
@@ -321,12 +299,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                 print("                    MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
                                                                                 print_list.append("                    MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
 
-                                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                 print("                        Src GinsorID: ", mushash)
                                                                                 print_list.append("                        Src GinsorID: " + mushash + "\n")
                                                                                 GinsorIds.append(mushash)
                                                                         elif(trobj["SoundCount"] != 0):
-                                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                            mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                             print("                    Src GinsorID: ", mushash)
                                                                             print_list.append("                    Src GinsorID: " + mushash + "\n")
                                                                             GinsorIds.append(mushash)
@@ -371,12 +349,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                         print("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
                                                                                         print_list.append("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
 
-                                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                        mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                         print("                                Src GinsorID: ", mushash)
                                                                                         print_list.append("                                Src GinsorID: " + mushash + "\n")
                                                                                         GinsorIds.append(mushash)
                                                                                 elif(trobj["SoundCount"] != 0):
-                                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                    mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                     print("                            Src GinsorID: ", mushash)
                                                                                     print_list.append("                            Src GinsorID: " + mushash + "\n")
                                                                                     GinsorIds.append(mushash)
@@ -418,12 +396,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                             print("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
                                                                                             print_list.append("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
 
-                                                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                            mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                             print("                                Src GinsorID: ", mushash)
                                                                                             print_list.append("                                Src GinsorID: " + mushash + "\n")
                                                                                             GinsorIds.append(mushash)
                                                                                     elif(trobj["SoundCount"] != 0):
-                                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                        mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                         print("                            Src GinsorID: ", mushash)
                                                                                         print_list.append("                            Src GinsorID: " + mushash + "\n")
                                                                                         GinsorIds.append(mushash)
@@ -465,12 +443,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                             print("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
                                                                                             print_list.append("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
 
-                                                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                            mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                             print("                    Src GinsorID: ", mushash)
                                                                                             print_list.append("                    Src GinsorID: " + mushash + "\n")
                                                                                             GinsorIds.append(mushash)
                                                                                     elif(trobj["SoundCount"] != 0):
-                                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                        mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                         print("                Src GinsorID: ", mushash)
                                                                                         print_list.append("                Src GinsorID: " + mushash + "\n")
                                                                                         GinsorIds.append(mushash)
@@ -517,12 +495,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                 print("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
                                                                                 print_list.append("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
 
-                                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                 print("                            Src GinsorID: ", mushash)
                                                                                 print_list.append("                            Src GinsorID: " + mushash + "\n")
                                                                                 GinsorIds.append(mushash)
                                                                         elif(trobj["SoundCount"] != 0):
-                                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                            mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                             print("                        Src GinsorID: ", mushash)
                                                                             print_list.append("                        Src GinsorID: " + mushash + "\n")
                                                                             GinsorIds.append(mushash)
@@ -564,12 +542,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                     print("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
                                                                                     print_list.append("                            MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
 
-                                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                    mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                     print("                                Src GinsorID: ", mushash)
                                                                                     print_list.append("                                Src GinsorID: " + mushash + "\n")
                                                                                     GinsorIds.append(mushash)
                                                                             elif(trobj["SoundCount"] != 0):
-                                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                 print("                            Src GinsorID: ", mushash)
                                                                                 print_list.append("                            Src GinsorID: " + mushash + "\n")
                                                                                 GinsorIds.append(mushash)
@@ -611,12 +589,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                                     print("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
                                                                                     print_list.append("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
 
-                                                                                    mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                    mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                     print("                    Src GinsorID: ", mushash)
                                                                                     print_list.append("                    Src GinsorID: " + mushash + "\n")
                                                                                     GinsorIds.append(mushash)
                                                                             elif(trobj["SoundCount"] != 0):
-                                                                                mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                                mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                                 print("                Src GinsorID: ", mushash)
                                                                                 print_list.append("                Src GinsorID: " + mushash + "\n")
                                                                                 GinsorIds.append(mushash)
@@ -661,12 +639,12 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                             vol = trobj["Properties"]["ParameterValues"][0]
                                                                             print("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
                                                                             print_list.append("                        MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
-                                                                            mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                            mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                             print("                            Src GinsorID: ", mushash)
                                                                             print_list.append("                            Src GinsorID: " + mushash + "\n")
                                                                             GinsorIds.append(mushash)
                                                                     elif(trobj["SoundCount"] != 0):
-                                                                        mushash = get_flipped_hex(fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
+                                                                        mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                         print("                        Src GinsorID: ", mushash)
                                                                         print_list.append("                        Src GinsorID: " + mushash + "\n")
                                                                         GinsorIds.append(mushash)
