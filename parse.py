@@ -11,10 +11,10 @@ import functions as gf
 
 #PUT YOUR OWN PATHS HERE
 #!!!!
-bnk_directory = ""
-#packages_path = "C:\\Steam SSD Games\\steamapps\\Common\\Destiny 2\\packages"
+bnk_directory = "E:\\DestinyMusic\\TWQBnks"
+packages_path = "C:\\Steam SSD Games\\steamapps\\Common\\Destiny 2\\packages"
 #packages_path = "D:\\D2_Backups\\LastBL\\packages"
-packages_path = "D:\\Shadowkeep\\packages"
+#packages_path = "D:\\PS4_Packages"
 #!!!!
 #PUT YOUR OWN PATHS HERE
     
@@ -148,6 +148,7 @@ os.chdir(wd)
 print_list = []
 MusicTrackIds = []
 GinsorIds = []
+fromstate = {}
 
 for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
     if hirc_file == "hirc.json":
@@ -171,25 +172,36 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                     curtempo = obj["Tempo"]
                     if(curtempo == 120.0):
                         curtempo = "Default/120.0"
-                    if(obj["Properties"]["ParentId"] == 0):
-                        continue
+                    #if(obj["Properties"]["ParentId"] == 0 and obj["PathSectionLength"] != 0):
+                    if(obj["PathSectionLength"] != 0 and obj["Paths"] != [] and fromstate == {}):
+                        for stobj in obj["Paths"]["Children"]:
+                            state = stobj["FromStateOrSwitchId"]
+                            audid = stobj["AudioId"]
+                            fromstate[audid] = state
+                            print(str(audid) + ": " + str(state))
+                            
                     print(f"MusicSwitchContainer #{o} (" + str(obj["Id"]) + ") | Tempo:", curtempo, "\n")
                     print_list.append(f"MusicSwitchContainer #{o} (" + str(obj["Id"]) + ") | Tempo: " + str(curtempo) + "\n\n")
                     p = 0
                     for child in obj["ChildIds"]:
                         for obj2 in data["Objects"]:
                             if obj2["Id"] == child and obj2["Type"] == "MusicPlaylistContainer":
-                                #MusicPlaylistContainerIds.append(child)
+                                MusicPlaylistContainerIds.append(child)
                                 
                                 #if obj["Id"] == playlist and obj["Type"] == "MusicSwitchContainer":
                                 #continue
                             #if obj["Id"] == playlist and obj["Type"] == "MusicPlaylistContainer":
+                    pq = 0
+                    for plid in MusicPlaylistContainerIds:
+                        for obj2 in data["Objects"]:
+                            if obj2["Id"] == plid and obj2["Type"] == "MusicPlaylistContainer":
                                 curtempo = obj2["Tempo"]
                                 if(curtempo == 120.0):
                                     curtempo = "Default/120.0"
                                 time_up = obj2["TimeSignatureUpper"]
                                 time_low = obj2["TimeSignatureLower"]
                                 timesig = ""
+                                new = "\n"
                                 if(time_up == 4 and time_low == 4):
                                     timesig = "Default (4/4)"
                                 else:
@@ -197,13 +209,21 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                 new = "\n"
                                 if(p==0):
                                     new=""
+                                id = obj2["Id"]                            
                                 if(obj2["Properties"]["ParameterCount"] > 0 and obj2["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
                                     vol = obj2["Properties"]["ParameterValues"][0]
-                                    print(f"{new}MusicPlaylistContainer #{p} (" + str(obj2["Id"]) + ") | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(new=new, vol=vol, tempo=curtempo, timesig=timesig))
-                                    print_list.append(f"{new}MusicPlaylistContainer #{p} (" + str(obj2["Id"]) + ") | VoiceVolume: {vol} | Tempo: {tempo} | Time Signature: {timesig}".format(new=new, vol=vol, tempo=curtempo, timesig=timesig) + "\n")
+                                    thestr = f"{new}MusicPlaylistContainer #{p}[{pq}] ({id}) | VoiceVolume: {vol} | Tempo: {curtempo} | Time Signature: {timesig}"
+                                    print(fromstate[id])
+                                    if(fromstate[id] != 0):
+                                        thestr += " | FromState: " + str(fromstate[id])
+                                    print(thestr)
+                                    print_list.append(thestr + "\n")
                                 else:
-                                    print(f"{new}MusicPlaylistContainer #{p} (" + str(obj2["Id"]) + ") | Tempo: {tempo} | Time Signature: {timesig}".format(new=new,tempo=curtempo, timesig=timesig))
-                                    print_list.append(f"{new}MusicPlaylistContainer #{p} (" + str(obj2["Id"]) + ") | Tempo: {tempo} | Time Signature: {timesig}".format(new=new, tempo=curtempo, timesig=timesig) + "\n")
+                                    thestr = f"{new}MusicPlaylistContainer #{p}[{pq}] ({id}) | Tempo: {curtempo} | Time Signature: {timesig}"
+                                    if(fromstate[id] != 0):
+                                        thestr += " | FromState: " + str(fromstate[id])
+                                    print(thestr)
+                                    print_list.append(thestr + "\n")
                                 list = obj2["Playlist"]
                                 l = 0
                                 #if(list["Type"] == "SequenceContinuous"):
@@ -245,7 +265,7 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                                                         vol = trobj["Properties"]["ParameterValues"][0]
                                                                         print("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol))
                                                                         print_list.append("                MusicTrack #{g} | VoiceVolume: {vol}".format(g=g, vol=vol) + "\n")
-
+                                                                        
                                                                         mushash = gf.get_flipped_hex(gf.fill_hex_with_zeros(f'{trobj["Sounds"][0]["AudioId"]:x}', 8), 8).upper()
                                                                         print("                    Src GinsorID: ", mushash)
                                                                         print_list.append("                    Src GinsorID: " + mushash + "\n")
@@ -655,20 +675,21 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                         i+=1
                                         g+=1
                                 l+=1
+                            pq += 1
                         p+=1       
                                 
-                        if(obj2["Id"] == child and obj2["Properties"]["ParentId"] == 0):
-                            continue
-                    o+=1
-                objc+=1
+                #if(obj2["Id"] == child and obj2["Properties"]["ParentId"] == 0):
+                    #continue
+            o+=1
+        objc+=1
                 #p = 0
             #for playlist in MusicPlaylistContainerIds:
                 #for obj in data["Objects"]:
                     
                 #p+=1
-    with open(f"outputs\\{bnkname}.txt", "w") as f:
-        for line in print_list:
-            f.write(line)
+with open(f"outputs\\{bnkname}.txt", "w") as f:
+    for line in print_list:
+        f.write(line)
 print(f"\nExported to outputs\\{bnkname}.txt")
 
 if(len(GinsorIds) != 0 and wavexport):
