@@ -178,7 +178,7 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                             state = stobj["FromStateOrSwitchId"]
                             audid = stobj["AudioId"]
                             fromstate[audid] = state
-                            print(str(audid) + ": " + str(state))
+                            #print(str(audid) + ": " + str(state))
                             
                     print(f"MusicSwitchContainer #{o} (" + str(obj["Id"]) + ") | Tempo:", curtempo, "\n")
                     print_list.append(f"MusicSwitchContainer #{o} (" + str(obj["Id"]) + ") | Tempo: " + str(curtempo) + "\n\n")
@@ -213,7 +213,7 @@ for hirc_file in os.listdir(wd + "\\raw_outputs\\" + bnkname):
                                 if(obj2["Properties"]["ParameterCount"] > 0 and obj2["Properties"]["ParameterTypes"][0] == "VoiceVolume"):
                                     vol = obj2["Properties"]["ParameterValues"][0]
                                     thestr = f"{new}MusicPlaylistContainer #{p}[{pq}] ({id}) | VoiceVolume: {vol} | Tempo: {curtempo} | Time Signature: {timesig}"
-                                    print(fromstate[id])
+                                    #print(fromstate[id])
                                     if(fromstate[id] != 0):
                                         thestr += " | FromState: " + str(fromstate[id])
                                     print(thestr)
