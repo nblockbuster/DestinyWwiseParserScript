@@ -12,7 +12,7 @@ Helpful list of all bnks linked to an activity:
 #### Optional Command Line Arguments
 `[better_]parse.py <path to bnk file/bnk file name(0000-0000)/bnk hash(xxxxxx80)> wav/wavconv/d1/prebl wav/wavconv/d1/prebl`
 - wav/wavconv: Auto-exports all wavs used in that bnk. (Requires setting packages path in the file).
-- d1/prebl: Should switch to pre-bl or d1 version for wav/bnk extraction. (Requires setting packages path in the file).
+- d1/prebl: Should switch to pre-bl or d1 version for wav/bnk extraction. (Requires setting packages path in the file & downloading Resources.zip).
 ## Planned Features
 - ~~GUI~~
 - - Implemented into [DMV](https://github.com/nblockbuster/DestinyMusicViewer)
