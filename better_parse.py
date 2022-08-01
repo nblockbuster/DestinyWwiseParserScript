@@ -6,9 +6,6 @@ from types import NoneType
 import zipfile
 import functions as gf
 
-from waapi import WaapiClient, CannotConnectToWaapiException
-from pprint import pprint
-
 #bnk_directory is unneeded if you set packages, but it's here for convenience
 #packages_path doesnt matter if you set bnk_directory and dont want wave files to be extracted too.
 
