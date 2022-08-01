@@ -14,4 +14,5 @@ Helpful list of all bnks linked to an activity:
 - wav/wavconv: Auto-exports all wavs used in that bnk. (Requires setting packages path in the file).
 - d1/prebl: Untested, but should switch to pre-bl or d1 version for wav/bnk extraction. (Requires setting packages path in the file).
 ## Planned Features
-- GUI
+- ~~GUI~~
+- - Implemented into [DMV](https://github.com/nblockbuster/DestinyMusicViewer)
